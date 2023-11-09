@@ -35,13 +35,32 @@ func Show(c *gin.Context){
 }
 
 func Create(c *gin.Context){
+	var product models.Product
 
+	if err:= c.ShouldBindJSON(&product); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message":err.Error()})
+		return
+	}
+	models.DB.Create(&product)
+	c.JSON(http.StatusOK, gin.H{"data":product})
 }
 
 func Update(c *gin.Context){
+	var product models.Product
+	id:=c.Param("id")
 
+	if err := c.ShouldBindJSON(&product); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message":err.Error()})
+	}
+	if models.DB.Model(&product).Where("id = ?", id).Updates(&product).RowsAffected == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message":"Data tidak ditemukan"})
+		return
+	}
+	
+	c.JSON(http.StatusOK, gin.H{"message":"Data berhasil diupdate"})
+	
 }
 
 func Delete(c *gin.Context){
-
+	
 }
