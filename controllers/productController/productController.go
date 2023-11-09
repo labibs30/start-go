@@ -16,6 +16,7 @@ func Index(c *gin.Context){
 }
 
 func Show(c *gin.Context){
+	// Get data by id
 	var product models.Product
 	id:=c.Param("id")
 
